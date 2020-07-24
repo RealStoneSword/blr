@@ -13,12 +13,13 @@ This is a small program written in C that creates boilerplate starter files for 
 git clone https://github.com/nswerhun/blr.git
 cd !#
 ```
-2. To compile only:
-```
-make
-```
-To compile and install to /usr/bin:
-```
-sudo make install
-```
+2. Install/Compile
+    1. To compile only:
+    ```
+    make
+    ```
+    2. To compile and install to /usr/bin:
+    ```
+    sudo make install
+    ```
 3. Done!

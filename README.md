@@ -11,7 +11,7 @@ This is a small program written in C that creates boilerplate starter files for 
 1. Clone this repository (and cd into it):
 ```
 git clone https://github.com/nswerhun/blr.git
-cd !#
+cd blr
 ```
 2. Install/Compile
     1. To compile only:

@@ -11,6 +11,12 @@ int main (int argc, char *argv[]) {
 
     FILE * fp;
 
+    if (argc == 1) {
+        printf("\033[1;32m->\033[0m Arguments required.\n\n");
+        usage();
+        return 0;
+    }
+
     if (strcmp(argv[1], "write") == 0 || strcmp(argv[1], "w") == 0) {
         if (strcmp(argv[2], "bash") == 0) {
             fp = fopen(argv[3], "w");

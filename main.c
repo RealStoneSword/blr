@@ -4,57 +4,52 @@
 #include <sys/stat.h>
 
 void usage() {
-    printf("Usage: blr [COMMAND] [LANGUAGE] [FILENAME]\nCreate boilerplate starter files for popular computer languages.\n\nCommands:\n - write, w\twrite a new file\n - wrexec, wx\twrite a file that is executable (for scripts)\n - usage\tdisplay this message\n\nLanguages:\n - bash\n - c\n - latex\n");
+    printf("Usage: blr [-weh] [c,bash,latex,html] [filename]\n\nCommands:\n\t-w\t\twrite a file\n\t-e\t\twrite a executable file\n\t-h\t\tdisplay this help message\n\nLanguages:\n\tc\n\tbash\n\tlatex\n\thtml\nNOTE: language names are case insensitive.\n");
 }
+
+int write(FILE ** pntr, char lang[]);
 
 int main (int argc, char *argv[]) {
 
-    FILE * fp;
+    FILE * fp = fopen(argv[3], "w");
 
-    if (argc == 1) {
-        printf("\033[1;32m->\033[0m Arguments required.\n\n");
-        usage();
-        return 0;
+    if (argv[1][0] != '-') {
+        printf("Invalid Argument.\n");
+        return 1;
     }
 
-    if (strcmp(argv[1], "write") == 0 || strcmp(argv[1], "w") == 0) {
-        if (strcmp(argv[2], "bash") == 0) {
-            fp = fopen(argv[3], "w");
-            fprintf(fp, "#!/bin/bash\n\n<++>\n");
-        } else if (strcmp(argv[2], "c") == 0) {
-            fp = fopen(argv[3], "w");
-            fprintf(fp, "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n\n    <++>\n\n    return 0;\n}\n");
-        } else if (strcmp(argv[2], "latex") == 0) {
-            fp = fopen(argv[3], "w");
-            fprintf(fp, "\\documentclass{article}\n\n\\begin{document}\n\n<++>\n\n\\end{document}\n");
-        } else {
-            printf("\033[1;32m->\033[0m Invalid or unsupported language \033[1;32m`%s'\033[0m. Run \033[1;32m`blr usage'\033[0m to see supported languages.\n", argv[2]);
+    switch (argv[1][1]) {
+        case 'w' :
+            write(&fp, argv[2]);
+            break;
+        case 'e' :
+            write(&fp, argv[2]);
+            chmod(argv[3], 0755);
+            break;
+        case 'h' :
+            usage();
+            return 0;
+        default :
+            printf("Invalid Argument.\n");
             return 1;
-        };
+    }
 
-        fclose(fp);
-        printf("\033[1;32m->\033[0m Successfully created %s file \033[1;32m`%s'\033[0m.\n", argv[2], argv[3]);
-        return 0;
-    } else if (strcmp(argv[1], "wrexec") == 0 || strcmp(argv[1], "wx") == 0) { 
-        if (strcmp(argv[2], "bash") == 0) {
-            fp = fopen(argv[3], "w");
-            fprintf(fp, "#!/bin/bash\n\n<++>\n");
-        } else {
-            printf("\033[1;32m->\033[0m Cannot create executable type \033[1;32m`%s'\033[0m.", argv[2]);
-            return 1;
-        };
+    fclose(fp);
+    printf("Created %s file %s.\n", argv[2], argv[3]);
+    return 0;
+}
 
-        fclose(fp);
-        chmod(argv[3], 0755);
-        printf("\033[1;32m->\033[0m Successfully created executable %s file \033[1;32m`%s'\033[0m.\n", argv[2], argv[3]);
-        return 0;
-    } else if (strcmp(argv[1], "usage") == 0) {
-        usage();
-        return 0;
+int write (FILE ** pntr, char lang[]) {
+    if (strcasecmp(lang, "c") == 0) { 
+        fprintf(*pntr, "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n\n    <++>\n\n    return 0;\n}\n");
+    } else if (strcasecmp(lang, "bash") == 0) {
+        fprintf(*pntr, "#!/bin/bash\n\n<++>\n");
+    } else if (strcasecmp(lang, "latex") == 0) {
+        fprintf(*pntr, "\\documentclass{article}\n\n\\begin{document}\n\n<++>\n\n\\end{document}\n");
+    } else if (strcasecmp(lang, "html") == 0) {
+        fprintf(*pntr, "<!DOCTYPE HTML>\n\n<html>\n    <head>\n        <++>\n    </head>\n\n    <body>\n        <++>\n    </body>\n</html>");
     } else {
-        printf("\033[1;32m->\033[0m Invalid command \033[1;32m`%s'\033[0m.\n\n", argv[1]);
-        usage();
+        printf("Invalid or unsupported language.\n");
         return 1;
-    };
-
+    }
 }

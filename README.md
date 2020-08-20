@@ -6,6 +6,7 @@ This is a small program written in C that creates boilerplate starter files for 
 - Bash
 - C
 - LaTeX
+- HTML
 
 ## Compilation and Installation
 1. Clone this repository (and cd into it):

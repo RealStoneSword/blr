@@ -13,10 +13,8 @@ int main (int argc, char *argv[]) {
 
     FILE * fp = fopen(argv[3], "w");
 
-    if (argv[1][0] != '-') {
-        printf("Invalid Argument.\n");
-        return 1;
-    }
+    if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0) { usage(); return 0; };
+    if (argv[1][0] != '-') { printf("Invalid Argument.\n"); return 1; };
 
     switch (argv[1][1]) {
         case 'w' :
@@ -26,16 +24,15 @@ int main (int argc, char *argv[]) {
             write(&fp, argv[2]);
             chmod(argv[3], 0755);
             break;
-        case 'h' :
-            usage();
-            return 0;
         default :
             printf("Invalid Argument.\n");
             return 1;
     }
 
+
     fclose(fp);
     printf("Created %s file %s.\n", argv[2], argv[3]);
+    printf("%d\n", argc);
     return 0;
 }
 

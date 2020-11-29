@@ -12,7 +12,7 @@ cd blr
     ```
     make
     ```
-    2. To compile and install to /usr/bin:
+    2. To compile and install to /usr/local/bin:
     ```
     sudo make install
     ```

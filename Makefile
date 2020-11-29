@@ -8,4 +8,4 @@ all: $(OBJS)
 
 install: $(OBJS)
 	$(CC) $(CFLAGS) -o $(OUTFILE) $(OBJS)
-	cp $(OUTFILE) /usr/bin/$(OUTFILE)
+	cp $(OUTFILE) /usr/local/bin/$(OUTFILE)

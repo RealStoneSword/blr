@@ -58,7 +58,7 @@ We added `"java"` as the **last** entry in `supported_langs`, so, our template *
     "    }\n"
     "}"
     )
-}
+};
 ```
 We can see that since `"java"` is after `"html"` in `supported_langs`, `java` must also be after `html` in `templates`. I cannot stress this enough. Both arrays must be in the **same order**.
 

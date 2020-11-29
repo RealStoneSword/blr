@@ -1,3 +1,6 @@
+/* TODO */
+/*  - make help function */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>

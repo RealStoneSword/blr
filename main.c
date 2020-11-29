@@ -1,52 +1,83 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
 #include <string.h>
 #include <sys/stat.h>
+#include "config.h"
 
-void usage() {
-    printf("Usage: blr [-weh] [language] [filename]\n\nCommands:\n    -w    write a file\n    -e    write an executable file\n    -h    display this help message\n\nLanguages:\n    c\n    bash\n    tex\n    html\nNOTE: language names are case insensitive.\n");
+const long int num_of_langs = sizeof(supported_langs)/sizeof(*supported_langs);
+const long int num_of_temps = sizeof(templates)/sizeof(*templates);
+
+void write(FILE **pntr, char *lang) {
+    for (int i = 0; i < num_of_langs; i++){
+        if (strcasecmp(lang, supported_langs[i]) == 0)
+            fprintf(*pntr, "%s", templates[i]);
+    }
 }
 
-int write(FILE ** pntr, char lang[], char name[]);
+int string_in_array(char *value, const char *array[], int array_length);
+int char_in_string(char value, char *string, int string_length);
 
-int main (int argc, char *argv[]) {
+int main(int argc, char *argv[]) {
+    char *short_args;
+    FILE *fp;
 
-    FILE * fp = fopen(argv[3], "w");
+    short_args = "weh";
 
-    if (strcmp(argv[1], "--help") == 0 || strcmp(argv[1], "-h") == 0) { usage(); return 0; };
-    if (argv[1][0] != '-') { printf("Invalid Argument.\n"); return 1; };
+    /* Usage checking */
+    if (argc < 3) {
+        printf("Not enough arguments.\n");
+        return 1; }
+    if (num_of_langs != num_of_temps){
+        printf("Invalid config.\n");
+        return 1; }
+    if (argv[1][0] != '-') {
+        printf("Invalid argument.\n");
+        return 1; }
+    if (char_in_string(argv[1][1], short_args, 3) == 1) {
+        printf("Invalid argument.\n");
+        return 1; }
+    if (string_in_array(argv[2], supported_langs, num_of_langs) == 1) {
+        printf("Invalid or unsupported language.\n");
+        return 1; }
 
+    /* Open file pointer */
+    fp = fopen(argv[3], "w");
+    if (fp == NULL) {
+        printf("Failed to open file.\n");
+        return 1; }
+
+    /* Parsing of command */
     switch (argv[1][1]) {
-        case 'w' :
-            write(&fp, argv[2], argv[3]);
+        case 'w':
+            write(&fp, argv[2]);
             break;
-        case 'e' :
-            write(&fp, argv[2], argv[3]);
-            chmod(argv[3], 0755);
+        case 'e':
+            write(&fp, argv[2]);
+            chmod(argv[3], 0775);
             break;
-        default :
-            printf("Invalid Argument.\n");
-            return 1;
+        case 'h':
+            break;
     }
 
-
+    /* Close file pointer */
     fclose(fp);
-    printf("Created `%s` file `%s`.\n", argv[2], argv[3]);
+
     return 0;
 }
 
-int write (FILE ** pntr, char lang[], char name[]) {
-    if (strcasecmp(lang, "c") == 0) { 
-        fprintf(*pntr, "#include <stdio.h>\n#include <stdlib.h>\n\nint main(int argc, char *argv[]) {\n\n    <++>\n\n    return 0;\n}\n");
-    } else if (strcasecmp(lang, "bash") == 0) {
-        fprintf(*pntr, "#!/bin/bash\n\n<++>\n");
-    } else if (strcasecmp(lang, "tex") == 0) {
-        fprintf(*pntr, "\\documentclass{article}\n\n\\begin{document}\n\n<++>\n\n\\end{document}\n");
-    } else if (strcasecmp(lang, "html") == 0) {
-        fprintf(*pntr, "<!DOCTYPE HTML>\n\n<html>\n    <head>\n        <++>\n    </head>\n\n    <body>\n        <++>\n    </body>\n</html>");
-    } else {
-        remove(name);
-        printf("Invalid or unsupported language.\n");
-        exit(1);
+int string_in_array(char *value, const char *array[], int array_length) {
+    for (int i = 0; i < array_length; i++) {
+        if (strcasecmp(value, array[i]) == 0)
+            return 0;
     }
+    return 1;
+}
+
+int char_in_string(char value, char *string, int string_length) {
+    for (int i = 0; i < string_length; i++) {
+        if (value == string[i])
+            return 0;
+    }
+    return 1;
 }

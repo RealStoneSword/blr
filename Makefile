@@ -1,8 +1,11 @@
-blr: main.c
-	gcc main.c -o blr
+CC = gcc
+CFLAGS = -Werror -Wall -Wextra -pedantic-errors -std=c99
+OUTFILE = blr
+OBJS = main.c
 
-.PHONY: install
+all: $(OBJS)
+	$(CC) $(CFLAGS) -o $(OUTFILE) $(OBJS)
 
-install: main.c
-	gcc main.c -o blr
-	install blr /usr/bin/.
+install: $(OBJS)
+	$(CC) $(CFLAGS) -o $(OUTFILE) $(OBJS)
+	cp $(OUTFILE) /usr/bin/$(OUTFILE)
